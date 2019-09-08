@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Project 0 - A First Interpreter - Programming Languages</title>
+    
+    <link rel="stylesheet" href="http://palexand.github.io/eecs662/stylesheets/styles.css">
+    <link rel="stylesheet" href="http://palexand.github.io/eecs662/stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>EECS 662</h1>
+        <h2>Programming Languages</h2>
+   	<ul>
+    	
+    	<li><a href="http://palexand.github.io/eecs662//project/2019/09/03/Project-0-Building-Interpreters.html">Project 0 - A First Interpreter</a></li>
+    	
+    	</ul>
+
+	<a href="http://palexand.github.io/eecs662/index.html">Index</a><br>
+	<a href="http://palexand.github.io/eecs662/blog.html">Blog</a><br>
+      </header>
+      <section> 
+        <h1>Project 0 - A First Interpreter</h1>
+        <p>Mini Project 0 - Implementing our First Interpreter
+EECS 662 - Programming Languages</p>
+
+<p><strong>Note the new due date - September 17 at 11:59pm</strong></p>
+
+<p>The objective of this miniproject is to develop your first
+rudimentary interpreter.  You will extend with the AE language
+presented in class to get up-to-speed with Haskell and write three
+different interpreters using three different styles.  For this
+project, AE will be extended to include an <code class="highlighter-rouge">if0</code> construct in addition
+to constructs discussed in class:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AE ::= natural
+        AE + AE |
+        AE - AE |
+        AE * AE |
+        AE / AE |
+        if0 AE then AE else AE
+</code></pre></div></div>
+
+<p>The new construct, <code class="highlighter-rouge">if0</code>, is an expression that evaluates its
+first argument and if it is 0 evaluates its second.  If not, it
+evaluates its third.</p>
+
+<p>Assume that <code class="highlighter-rouge">natural</code> represents the natural numbers as we have been
+discussing in class, so you must add error handling for negative
+numbers.</p>
+
+<p>To aid in your quest, the file
+<a href="http://palexand.github.io/eecs662//resources/p0.hs">p0.hs</a> implements the
+Haskell AE data
+type and a parser from strings to the data type.  At the bottom of
+the file you will find signatures for the four functions required for
+the four exercises below.</p>
+
+<h2 id="exercise-1">Exercise 1</h2>
+
+<p>Write a function, <code class="highlighter-rouge">evalAE::AE -&gt; Int</code>, that takes a AE data
+structure, evaluates it, and returns an <code class="highlighter-rouge">Int</code>.  If your
+interpreter fails, it should throw an error using the <code class="highlighter-rouge">error</code>
+function discussed in class.  Remember that <code class="highlighter-rouge">number</code> is a natural
+numnber and cannot be negative.</p>
+
+<h2 id="exercise-2">Exercise 2</h2>
+
+<p>Write a function, <code class="highlighter-rouge">evalAEMaybe::AE -&gt; Maybe Int</code>, that takes the
+same AE data structure as Exercise 1, evalutes it, and returns a
+value.  Use <code class="highlighter-rouge">Just</code> to return a number and <code class="highlighter-rouge">Nothing</code> to indicate an
+error.  Do not use <code class="highlighter-rouge">Maybe</code> as a monad in this interpreter.  Use
+<code class="highlighter-rouge">if</code> and/or <code class="highlighter-rouge">case</code> to process errors.</p>
+
+<h2 id="exercise-3">Exercise 3</h2>
+
+<p>Write a function, <code class="highlighter-rouge">evalM::AE -&gt; Maybe Int</code>, that takes the same AE
+data structure as Exercises 1 &amp; 2, evaluates it, and returns a
+number.  This time, use the <code class="highlighter-rouge">do</code> notation to treat <code class="highlighter-rouge">Maybe</code> as a
+monad.</p>
+
+<h2 id="exercise-4">Exercise 4</h2>
+
+<p>Write a function, <code class="highlighter-rouge">interpAE</code> that combines the AE parser and
+<code class="highlighter-rouge">evalM</code> into a single operation that parses and then evaluates an
+AE expression.  You will be provided a parser and must integrate it
+with your interpreter.</p>
+
+<h2 id="notes">Notes</h2>
+
+<p>Most if not all the code for the AE interpreter can be found in our
+text.  I would encourage you to try to write as much of it as possible
+without referring to the textbook examples.</p>
+
+<p>To give you an idea of the effort required for this
+miniproject, my code is about 100 lines long and took me roughly an
+hour to write and debug.  I view this as an easy project at this point
+in the semester.  Do not put it off as most of you haven’t used
+Haskell in some time.  Additionally, you’ll need to figure out how to
+use the Haskell tools installed on EECS machines or
+install them on your own.</p>
+
+      </section>
+      <footer>
+        <p>Maintained by <a href="https://github.com/palexand">Perry Alexander</a></p>
+<p><small>Hosted on GitHub Pages </br> Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+  </body>
+</html>
