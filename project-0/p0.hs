@@ -90,13 +90,37 @@ parseAE = parseString expr
 -- Exercise 4 requires you to integrate the parser above.
 
 evalAE :: AE -> Int
-evalAE _ = 0
+evalAE (Num n) = n
+evalAE (Plus l r) = evalAE(l) + evalAE(r)
+evalAE (Minus l r) = if l_prime >= r_prime then l_prime - r_prime
+                                         else error "Negative number not defined in language !!!"
+                     where l_prime = evalAE(l)
+                           r_prime = evalAE(r)
 
 evalAEMaybe :: AE -> Maybe Int
-evalAEMaybe _ = Nothing
+evalAEMaybe (Num n) = Just n
+evalAEMaybe (Plus l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then Nothing
+                                                                     else Just(lifted_l + lifted_r)
+                   where l_prime = evalAEMaybe(l)
+                         r_prime = evalAEMaybe(r)
+                         Just lifted_l = l_prime
+                         Just lifted_r = r_prime
+evalAEMaybe (Minus l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then Nothing
+                             else if lifted_l >= lifted_r then Just (lifted_l - lifted_r) else Nothing
+                          where l_prime = evalAEMaybe(l)
+                                r_prime = evalAEMaybe(r)
+                                Just lifted_l = l_prime
+                                Just lifted_r = r_prime
 
 evalM :: AE -> Maybe Int
-evalM _ = Nothing
+evalM (Num n) = Just n
+evalM (Plus l r) = do { l_prime <- evalM(l);
+                        r_prime <- evalM(r);
+                        Just (l_prime + r_prime) }
+evalM (Minus l r) = do { l_prime <- evalM(l);
+                         r_prime <- evalM(r);
+                         if l_prime >= r_prime then Just (l_prime - r_prime) 
+                                               else Nothing }
 
 interpAE :: String -> Maybe Int
-interpAE _ = Nothing
+interpAE input_string = evalM (parseAE input_string)
