@@ -96,6 +96,17 @@ evalAE (Minus l r) = if l_prime >= r_prime then l_prime - r_prime
                                          else error "Negative number not defined in language !!!"
                      where l_prime = evalAE(l)
                            r_prime = evalAE(r)
+evalAE (Mult l r) = if (0 > l_prime) || (0 > r_prime) then  error "Negative number not defined in language !!!"
+                                         else l_prime * r_prime
+                     where l_prime = evalAE(l)
+                           r_prime = evalAE(r)
+
+evalAE (Div l r) = if (0 > l_prime) || (0 > r_prime) then error "Negative number not definded in language !!!" else if 0 == r_prime then error "Dividing by zero !!!" else div l_prime r_prime
+                     where l_prime = evalAE(l)
+                           r_prime = evalAE(r)
+
+evalAE (if0 cond l_branch r_branch) = if 0 > cond_prime then error "Condition evaluated to negative number" else if 0 == cond then evalAE(l_branch) else evalAE(r_branch)
+                                        where cond_prime = evalAE(cond)
 
 evalAEMaybe :: AE -> Maybe Int
 evalAEMaybe (Num n) = Just n
@@ -105,12 +116,28 @@ evalAEMaybe (Plus l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then 
                          r_prime = evalAEMaybe(r)
                          Just lifted_l = l_prime
                          Just lifted_r = r_prime
+
 evalAEMaybe (Minus l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then Nothing
                              else if lifted_l >= lifted_r then Just (lifted_l - lifted_r) else Nothing
                           where l_prime = evalAEMaybe(l)
                                 r_prime = evalAEMaybe(r)
                                 Just lifted_l = l_prime
                                 Just lifted_r = r_prime
+
+evalAEMaybe (Mult l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then Nothing
+                             else if (0 > lifted_r) || (0 > lifted_l) then Nothing else Just (lifted_l * lifted_r)
+                          where l_prime = evalAEMaybe(l)
+                                r_prime = evalAEMaybe(r)
+                                Just lifted_l = l_prime
+                                Just lifted_r = r_prime
+
+evalAEMaybe (Div l r) = if ((Nothing == l_prime) || (Nothing == r_prime)) then Nothing
+                             else if lifted_l >= lifted_r then if 0 == lifted_r then Nothing else Just (div lifted_l lifted_r) else Nothing
+                          where l_prime = evalAEMaybe(l)
+                                r_prime = evalAEMaybe(r)
+                                Just lifted_l = l_prime
+                                Just lifted_r = r_prime
+evalAEMaybe (if0 cond l_branch r_branch) = if Nothing == cond_prime then Nothing else if 0 == lifted_cond then evalAEMaybe(l_branch) else evalAEMaybe(r_branch)
 
 evalM :: AE -> Maybe Int
 evalM (Num n) = Just n
@@ -121,6 +148,15 @@ evalM (Minus l r) = do { l_prime <- evalM(l);
                          r_prime <- evalM(r);
                          if l_prime >= r_prime then Just (l_prime - r_prime) 
                                                else Nothing }
+evalM (Mult l r) = do { l_prime <- evalM(l);
+                        r_prime <- evalM(r);
+                        if (0 > l_prime) || (0 > r_prime) then Nothing
+                                                          else Just (l_prime * r_prime) } 
+evalM (Div l r) = do { l_prime <- evalM(l);
+                       r_prime <-evalM(r);
+                       if l_prime >= r_prime then if 0 == r_prime then Nothing
+                                                                  else Just (div l_prime r_prime)
+                                                                  else Nothing }
 
 interpAE :: String -> Maybe Int
 interpAE input_string = evalM (parseAE input_string)
