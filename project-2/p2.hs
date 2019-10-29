@@ -29,7 +29,7 @@ type Env = [(String,BBAE)]
 type Cont = [(String,TBBAE)]
 
 subst::String->BBAE->BBAE->(Maybe BBAE)
-subst i val (Id id) = if (i == id) then return val else Nothing
+subst i val (Id id) = if (i == id) then return val else return (Id id)
 subst i val (Plus lhs rhs) = do { l <- (subst i val lhs);
                                   r <- (subst i val rhs); 
                                   return (Plus l r) }  
@@ -55,7 +55,7 @@ subst _ _ n = return n
 evalS :: BBAE -> (Maybe BBAE)
 evalS (Num n) = return (Num n)
 evalS (Boolean b) = return (Boolean b)
-evalS (Id i) = return (Id i)
+evalS (Id i) = Nothing
 evalS (Plus lhs rhs) = do { (Num l) <- evalS(lhs); 
                             (Num r) <- evalS(rhs); 
                             return (Num (l+r))}
