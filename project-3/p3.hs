@@ -114,7 +114,9 @@ elabFBAEC (AppE f a) = (App (elabFBAEC f) (elabFBAEC a))
 elabFBAEC (IfE c t e) = (App (App (elabFBAEC c) (elabFBAEC t)) (elabFBAEC e)) 
 elabFBAEC (AndE lhs rhs) = (App (App (elabFBAEC lhs) (elabFBAEC rhs)) (elabFBAEC FalseE))
 elabFBAEC (OrE lhs rhs) = (App (App (elabFBAEC lhs) (elabFBAEC TrueE)) (elabFBAEC rhs))
-elabFBAEC (NotE term) = (App (App (elabFBAEC term) (elabFBAEC FalseE)) (elabFBAEC TrueE) )
+elabFBAEC (NotE term) = (App (App (elabFBAEC term) (elabFBAEC FalseE)) (elabFBAEC TrueE))
+elabFBAEC (PlusE  lhs rhs) = (Plus (elabFBAEC lhs) (elabFBAEC rhs))
+elabFBAEC (MinusE lhs rhs) = (Minus (elabFBAEC lhs) (elabFBAEC rhs))
 elabFBAEC _ = (Num (-1))
 
 evalFBAEC :: Env' -> FBAEC -> Maybe FAEValue
